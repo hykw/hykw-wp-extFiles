@@ -7,23 +7,16 @@
   Version: 1.0.0
 */
 
+
+/**
+ * $obj = new hykwExtFiles('extFiles')
+ *   → テーマディレクトリ/extFiles/ファイル種別/キー.txt から値を取得する
+ *
+ */
 class hykwExtFiles
 {
-  private static $extDir = 'extFiles';
-  private static $keyFile_suffix = 'txt';
-
-  /**
-   * $obj = new hykwExtFiles('extFiles')
-   *   → テーマディレクトリ/extFiles/ファイル種別/キー.txt から値を取得する
-   * 
-   * @param String $extDir  外部ファイルを置くディレクトリ
-   */
-
-  function __construct($extDir = 'extFiles', $suffix = 'txt')
-  {
-    $this->extDir = $extDir;
-    $this->keyFile_suffix = $suffix;
-  }
+  const EXT_DIR = 'extFiles';
+  const KEYFILE_SUFFIX = 'txt';
 
   /**
    * 指定親子テーマ・ファイル種別・キーのファイルの中身を返す
@@ -33,13 +26,15 @@ class hykwExtFiles
    *
    *
    * @access public
-   * @param String $parentChild 親か子（"parent" or "child")
-   * @param String $fileType ファイル種別（e.g. "tags")
-   * @param String $key キー
+   * @param string $parentChild 親か子（"parent" or "child")
+   * @param string $fileType ファイル種別（e.g. "tags")
+   * @param string $key キー
+   * @param boolean $onErrorThrow TRUEならエラーの時に例外を投げる
+   * @param mixed $errorReturn エラーの時に返す値（$onErrorThrow=FALSEの場合のみ有効）
    *
    * @return String ファイルの中身
    */
-  public static function getValue($parentChild, $fileType, $key)
+  public static function getValue($parentChild, $fileType, $key, $onErrorThrow = TRUE, $errorReturn = FALSE)
   {
     switch ($parentChild) {
     case 'parent':
@@ -49,13 +44,19 @@ class hykwExtFiles
       $theme_dir = get_stylesheet_directory();
       break;
     default: 
-      throw new Exception('Unknown $parentChild');
+      if ($onErrorThrow)
+        throw new Exception('Unknown $parentChild');
+      else
+        return $errorReturn;
     }
 
-    $baseDir = sprintf('%s/%s/', $theme_dir, $this->extDir);
-    $keyFile = sprintf('%s/%s/%s.%s', $baseDir, $fileType, $key, $this->keyFile_suffix);
+    $baseDir = sprintf('%s/%s', $theme_dir, self::EXT_DIR);
+    $keyFile = sprintf('%s/%s/%s.%s', $baseDir, $fileType, $key, self::KEYFILE_SUFFIX);
     if (!file_exists($keyFile)) {
-      throw new Exception(sprintf('File not found: %s', $keyFile));
+      if ($onErrorThrow)
+        throw new Exception(sprintf('File not found: %s', self::KEYFILE_SUFFIX));
+      else
+        return $errorReturn;
     }
     $contents = file_get_contents($keyFile);
     return $contents;
