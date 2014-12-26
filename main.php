@@ -16,7 +16,6 @@
 class hykwExtFiles
 {
   const EXT_DIR = 'extFiles';
-  const KEYFILE_SUFFIX = 'txt';
 
   /**
    * 指定親子テーマ・ファイル種別・キーのファイルの中身を返す
@@ -51,10 +50,10 @@ class hykwExtFiles
     }
 
     $baseDir = sprintf('%s/%s', $theme_dir, self::EXT_DIR);
-    $keyFile = sprintf('%s/%s/%s.%s', $baseDir, $fileType, $key, self::KEYFILE_SUFFIX);
+    $keyFile = sprintf('%s/%s/%s', $baseDir, $fileType, $key);
     if (!file_exists($keyFile)) {
       if ($onErrorThrow)
-        throw new Exception(sprintf('File not found: %s', self::KEYFILE_SUFFIX));
+        throw new Exception(sprintf('File not found: %s', $keyFile));
       else
         return $errorReturn;
     }
