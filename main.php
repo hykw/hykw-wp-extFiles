@@ -20,11 +20,6 @@ class hykwExtFiles
   /**
    * 指定親子テーマ・ファイル種別・キーのファイルの中身を返す
    *
-   * 親/子テーマファイルの下の
-   *
-   *
-   *
-   * @access public
    * @param string $parentChild 親か子（"parent" or "child")
    * @param string $fileType ファイル種別（e.g. "tags")
    * @param string $key キー
